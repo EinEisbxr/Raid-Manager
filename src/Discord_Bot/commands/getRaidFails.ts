@@ -1,9 +1,8 @@
-import { ButtonStyle, CommandInteraction } from "discord.js";
+import { CommandInteraction } from "discord.js";
 import { prisma } from "../../index.js";
 import { getRaidData } from "../../CoC_API/raidFunctions.js";
 import { EmbedBuilder } from "discord.js";
 import { generatePageButtons } from "../functions/generateButtons.js";
-import { APIButtonComponentWithCustomId } from "discord.js";
 
 export const data = {
     name: "get_raid_fails",
