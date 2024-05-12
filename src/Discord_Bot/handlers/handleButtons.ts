@@ -16,20 +16,16 @@ export async function handleButtons(interaction: any) {
         const pages = JSON.parse(pageButton.pages);
 
         let currentPage = pageButton.currentPage;
-        if (type === "N" && currentPage < pages.length - 1) {
+        if (type === "N" && currentPage < pages.length) {
             currentPage = pageButton.currentPage + 1;
             interaction.editReply({
-                content: `Showing raid fails for clan ${
-                    pageButton.clanTag
-                }; Page (${currentPage}/${pages.length - 1})`,
+                content: `Showing raid fails for clan ${pageButton.clanTag}; Page (${currentPage}/${pages.length})`,
                 embeds: pages[currentPage],
             });
         } else if (type === "P" && currentPage > 1) {
             currentPage = pageButton.currentPage - 1;
             interaction.editReply({
-                content: `Showing raid fails for clan ${
-                    pageButton.clanTag
-                }; Page (${currentPage}/${pages.length - 1})`,
+                content: `Showing raid fails for clan ${pageButton.clanTag}; Page (${currentPage}/${pages.length})`,
                 embeds: pages[currentPage],
             });
         }

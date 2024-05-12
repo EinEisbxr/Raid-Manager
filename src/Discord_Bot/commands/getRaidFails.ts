@@ -48,6 +48,14 @@ export async function execute(interaction: CommandInteraction) {
     };
 
     const raidData = await getRaidData(clanTag);
+    if (raidData.items.length === 0) {
+        await interaction.reply({
+            content: `Could not find raid data for clan ${clanTag}`,
+            ephemeral: true,
+        });
+        return;
+    }
+
     const attacks = raidData.items[0].attackLog;
     let embeds = [];
 
@@ -79,10 +87,17 @@ export async function execute(interaction: CommandInteraction) {
         }
     }
 
-    const maxEmbedsPerMessage = 5;
-    const totalEmbeds = embeds.length;
-    let messageCount = 0;
+    console.log(embeds);
 
+    if (embeds.length === 0) {
+        await interaction.reply({
+            content: `No raid fails found for clan ${clanTag}`,
+            ephemeral: true,
+        });
+        return;
+    }
+
+    const maxEmbedsPerMessage = 5;
     let pages: EmbedBuilder[][] = [];
     let currentPage: EmbedBuilder[] = [];
 
@@ -94,6 +109,10 @@ export async function execute(interaction: CommandInteraction) {
             pages.push(currentPage);
             currentPage = [embeds[i]];
         }
+    }
+
+    if (currentPage.length > 0) {
+        pages.push(currentPage);
     }
 
     // save to database
@@ -109,9 +128,7 @@ export async function execute(interaction: CommandInteraction) {
     const buttons = await generatePageButtons(createdRecord);
 
     interaction.reply({
-        content: `Showing raid fails for clan ${clanTag}; Page (1/${
-            pages.length - 1
-        })`,
+        content: `Showing raid fails for clan ${clanTag}; Page (1/${pages.length})`,
         embeds: pages[0],
         components: [
             {
