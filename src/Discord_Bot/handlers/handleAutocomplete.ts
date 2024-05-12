@@ -4,7 +4,10 @@ interface Choice {
 }
 
 export async function handleAutocomplete(interaction: any) {
-    if (interaction.commandName === "setup_clan") {
+    if (
+        interaction.commandName === "get_raid_fails" ||
+        interaction.commandName === "setup_clan"
+    ) {
         const choices = [
             {
                 name: "Lost F2P 2 (#2LG222Q0L)",
