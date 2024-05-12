@@ -1,0 +1,6 @@
+.env
+/dist
+/node_modules
+prisma/raidData.db-journal
+prisma/raidData.db
+/prisma/migrations
