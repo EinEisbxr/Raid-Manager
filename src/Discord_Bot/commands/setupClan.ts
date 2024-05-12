@@ -1,5 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { prisma } from "../../index.js";
+import { GuildMemberRoleManager } from "discord.js";
+import { ADMIN_ROLE_IDS } from "../config.js";
 
 export const data = {
     name: "setup_clan",
@@ -70,6 +72,22 @@ export const data = {
 };
 
 export async function execute(interaction: CommandInteraction) {
+    const member = interaction.member;
+    if (!member) {
+        await interaction.reply("Member not found.");
+        return;
+    }
+    const isAdmin = (member.roles as GuildMemberRoleManager).cache.some(
+        (role) => ADMIN_ROLE_IDS.includes(role.id)
+    );
+
+    if (!isAdmin) {
+        await interaction.reply(
+            "You do not have permission to use this command."
+        );
+        return;
+    }
+
     const clanTag = interaction.options.get("clan_tag")?.value as string;
     const capitalPeak = interaction.options.get("capital_peak")
         ?.value as number;

@@ -1,7 +1,9 @@
-import { CommandInteraction } from "discord.js";
+import { ButtonStyle, CommandInteraction } from "discord.js";
 import { prisma } from "../../index.js";
 import { getRaidData } from "../../CoC_API/raidFunctions.js";
 import { EmbedBuilder } from "discord.js";
+import { generatePageButtons } from "../functions/generateButtons.js";
+import { APIButtonComponentWithCustomId } from "discord.js";
 
 export const data = {
     name: "get_raid_fails",
@@ -61,13 +63,12 @@ export async function execute(interaction: CommandInteraction) {
             ) {
                 const embed = new EmbedBuilder()
                     .setTitle(`Fail on ${district.name} in Raid ${i + 1}`)
-                    .setDescription(`Attacks: ${district.attackCount}`)
                     .setColor("#0099ff");
 
                 for (let k = 0; k < district.attackCount; k++) {
                     embed.addFields([
                         {
-                            name: `Attack ${k + 1}`,
+                            name: `Attack ${district.attackCount - k}`,
                             value: `Attacker: ${district.attacks[k].attacker.name}, destruction: ${district.attacks[k].destructionPercent}%`,
                             inline: false,
                         },
@@ -79,39 +80,45 @@ export async function execute(interaction: CommandInteraction) {
         }
     }
 
-    const maxEmbedsPerMessage = 10;
+    const maxEmbedsPerMessage = 5;
     const totalEmbeds = embeds.length;
     let messageCount = 0;
 
-    // Reply to the interaction with the first set of embeds
-    const firstEmbeds = embeds.splice(0, maxEmbedsPerMessage);
-    const firstMessageContent = `Raid fails for clan ${
-        existingClan.tag
-    } (Page ${messageCount + 1}/${Math.ceil(
-        totalEmbeds / maxEmbedsPerMessage
-    )})`;
-    const firstMessageEmbeds = firstEmbeds.map((embed) => embed.toJSON());
+    let pages: EmbedBuilder[][] = [];
+    let currentPage: EmbedBuilder[] = [];
 
-    await interaction.reply({
-        content: firstMessageContent,
-        embeds: firstMessageEmbeds,
+    // Store the embeds in the pages array
+    for (let i = 0; i < embeds.length; i++) {
+        if (currentPage.length < maxEmbedsPerMessage) {
+            currentPage.push(embeds[i]);
+        } else {
+            pages.push(currentPage);
+            currentPage = [embeds[i]];
+        }
+    }
+
+    // save to database
+    const createdRecord = await prisma.PageButton.create({
+        data: {
+            currentPage: 1,
+            pages: JSON.stringify(pages),
+            creation: new Date(),
+            clanTag: clanTag,
+        },
     });
 
-    messageCount++;
+    const buttons = await generatePageButtons(createdRecord);
 
-    // Use followUp for the rest of the messages
-    while (embeds.length > 0) {
-        const currentEmbeds = embeds.splice(0, maxEmbedsPerMessage);
-        const messageContent = `Raid fails for clan ${existingClan.tag} (Page ${
-            messageCount + 1
-        }/${Math.ceil(totalEmbeds / maxEmbedsPerMessage)})`;
-        const messageEmbeds = currentEmbeds.map((embed) => embed.toJSON());
-
-        await interaction.followUp({
-            content: messageContent,
-            embeds: messageEmbeds,
-        });
-
-        messageCount++;
-    }
+    interaction.reply({
+        content: `Showing raid fails for clan ${clanTag}; Page (1/${
+            pages.length - 1
+        })`,
+        embeds: pages[0],
+        components: [
+            {
+                type: 1,
+                components: buttons,
+            },
+        ],
+    });
 }

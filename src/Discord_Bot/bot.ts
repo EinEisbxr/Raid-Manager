@@ -3,6 +3,7 @@ import { config } from "./config.js";
 import { commands } from "./commands/index.js";
 import { deployCommands } from "./deploy-commands.js";
 import { handleAutocomplete } from "./handlers/handleAutocomplete.js";
+import { handleButtons } from "./handlers/handleButtons.js";
 
 export function startBot() {
     const client = new Client({
@@ -48,6 +49,13 @@ export function startBot() {
             return;
         }
         handleAutocomplete(interaction);
+    });
+
+    client.on("interactionCreate", async (interaction) => {
+        if (!interaction.isButton()) {
+            return;
+        }
+        handleButtons(interaction);
     });
 
     client.login(config.DISCORD_TOKEN);

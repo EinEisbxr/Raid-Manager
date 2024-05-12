@@ -24,3 +24,11 @@ model Clan {
     maxSkeletonPark     Int
     maxGoblinMines      Int
 }
+
+model PageButton {
+    id          Int      @id @default(autoincrement())
+    currentPage Int
+    pages       String
+    creation    DateTime
+    clanTag     String
+}
