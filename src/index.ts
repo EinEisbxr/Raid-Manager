@@ -15,7 +15,11 @@ setInterval(async () => {
 const server = net.createServer((socket) => {
     socket.write("Echo server\r\n");
     socket.pipe(socket);
+
+    socket.on("error", (err) => {
+        console.error(`Socket error: ${err}`);
+    });
 });
 
 // Listen for a connection on port 8000
-server.listen(8000, "127.0.0.1");
+server.listen(8000, "0.0.0.0");
