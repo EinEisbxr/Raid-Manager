@@ -19,122 +19,131 @@ export const data = {
 };
 
 export async function execute(interaction: CommandInteraction) {
-    const clanTag = interaction.options.get("clan_tag")?.value as string;
-    const existingClan = await prisma.clan.findFirst({
-        where: {
-            tag: clanTag,
-            guildID: interaction.guildId,
-        },
-    });
-
-    if (!existingClan) {
-        await interaction.reply({
-            content: `Clan with tag ${clanTag} not found. Please use the \`/setup_clan\` command to set up the clan.`,
-            ephemeral: true,
+    try {
+        const clanTag = interaction.options.get("clan_tag")?.value as string;
+        const existingClan = await prisma.clan.findFirst({
+            where: {
+                tag: clanTag,
+                guildID: interaction.guildId,
+            },
         });
-        return;
-    }
 
-    const districtMapping: { [key: string]: string } = {
-        "Capital Peak": "maxCapitalPeak",
-        "Barbarian Camp": "maxBarbarianCamp",
-        "Wizard Valley": "maxWizardValley",
-        "Balloon Lagoon": "maxBalloonLagoon",
-        "Builders Workshop": "maxBuildersWorkshop",
-        "Dragon Cliffs": "maxDragonCliffs",
-        "Golem Quarry": "maxGolemQuarry",
-        "Skeleton Park": "maxSkeletonPark",
-        "Goblin Mines": "maxGoblinMines",
-    };
+        if (!existingClan) {
+            await interaction.reply({
+                content: `Clan with tag ${clanTag} not found. Please use the \`/setup_clan\` command to set up the clan.`,
+                ephemeral: true,
+            });
+            return;
+        }
 
-    const raidData = await getRaidData(clanTag);
-    if (raidData.items.length === 0) {
-        await interaction.reply({
-            content: `Could not find raid data for clan ${clanTag}`,
-            ephemeral: true,
-        });
-        return;
-    }
+        const districtMapping: { [key: string]: string } = {
+            "Capital Peak": "maxCapitalPeak",
+            "Barbarian Camp": "maxBarbarianCamp",
+            "Wizard Valley": "maxWizardValley",
+            "Balloon Lagoon": "maxBalloonLagoon",
+            "Builders Workshop": "maxBuildersWorkshop",
+            "Dragon Cliffs": "maxDragonCliffs",
+            "Golem Quarry": "maxGolemQuarry",
+            "Skeleton Park": "maxSkeletonPark",
+            "Goblin Mines": "maxGoblinMines",
+        };
 
-    const attacks = raidData.items[0].attackLog;
-    let embeds = [];
+        const raidData = await getRaidData(clanTag);
+        if (raidData?.items?.length === 0 || raidData === null) {
+            await interaction.reply({
+                content: `Could not get any clan data for ${clanTag}. Please check the clan tag and try again.`,
+                ephemeral: true,
+            });
+            return;
+        }
 
-    for (let i = 0; i < attacks.length; i++) {
-        const attack = attacks[i];
-        for (let j = 0; j < attack.districts.length; j++) {
-            const district = attack.districts[j];
-            const districtName = districtMapping[district.name];
-            if (
-                districtName &&
-                district.attackCount > existingClan[districtName]
-            ) {
-                const embed = new EmbedBuilder()
-                    .setTitle(`Fail on ${district.name} in Raid ${i + 1}`)
-                    .setColor("#0099ff");
+        const attacks = raidData.items[0].attackLog;
+        let embeds = [];
 
-                for (let k = 0; k < district.attackCount; k++) {
-                    embed.addFields([
-                        {
-                            name: `Attack ${district.attackCount - k}`,
-                            value: `Attacker: ${district.attacks[k].attacker.name}, destruction: ${district.attacks[k].destructionPercent}%`,
-                            inline: false,
-                        },
-                    ]);
+        for (let i = 0; i < attacks.length; i++) {
+            const attack = attacks[i];
+            for (let j = 0; j < attack.districts.length; j++) {
+                const district = attack.districts[j];
+                const districtName = districtMapping[district.name];
+                if (
+                    districtName &&
+                    district.attackCount > existingClan[districtName]
+                ) {
+                    const embed = new EmbedBuilder()
+                        .setTitle(`Fail on ${district.name} in Raid ${i + 1}`)
+                        .setColor("#0099ff");
+
+                    for (let k = 0; k < district.attackCount; k++) {
+                        embed.addFields([
+                            {
+                                name: `Attack ${district.attackCount - k}`,
+                                value: `Attacker: ${district.attacks[k].attacker.name}, destruction: ${district.attacks[k].destructionPercent}%`,
+                                inline: false,
+                            },
+                        ]);
+                    }
+
+                    embeds.push(embed);
                 }
-
-                embeds.push(embed);
             }
         }
-    }
 
-    console.log(embeds);
+        console.log(embeds);
 
-    if (embeds.length === 0) {
+        if (embeds.length === 0) {
+            await interaction.reply({
+                content: `No raid fails found for clan ${clanTag}`,
+                ephemeral: true,
+            });
+            return;
+        }
+
+        const maxEmbedsPerMessage = 5;
+        let pages: EmbedBuilder[][] = [];
+        let currentPage: EmbedBuilder[] = [];
+
+        // Store the embeds in the pages array
+        for (let i = 0; i < embeds.length; i++) {
+            if (currentPage.length < maxEmbedsPerMessage) {
+                currentPage.push(embeds[i]);
+            } else {
+                pages.push(currentPage);
+                currentPage = [embeds[i]];
+            }
+        }
+
+        if (currentPage.length > 0) {
+            pages.push(currentPage);
+        }
+
+        // save to database
+        const createdRecord = await prisma.PageButton.create({
+            data: {
+                currentPage: 1,
+                pages: JSON.stringify(pages),
+                creation: new Date(),
+                clanTag: clanTag,
+            },
+        });
+
+        const buttons = await generatePageButtons(createdRecord);
+
+        interaction.reply({
+            content: `Showing raid fails for clan ${clanTag}; Page (1/${pages.length})`,
+            embeds: pages[0],
+            components: [
+                {
+                    type: 1,
+                    components: buttons,
+                },
+            ],
+        });
+    } catch (error) {
+        console.error(error);
         await interaction.reply({
-            content: `No raid fails found for clan ${clanTag}`,
+            content:
+                "An internal error occured. Please contact EinEisbär | Felix",
             ephemeral: true,
         });
-        return;
     }
-
-    const maxEmbedsPerMessage = 5;
-    let pages: EmbedBuilder[][] = [];
-    let currentPage: EmbedBuilder[] = [];
-
-    // Store the embeds in the pages array
-    for (let i = 0; i < embeds.length; i++) {
-        if (currentPage.length < maxEmbedsPerMessage) {
-            currentPage.push(embeds[i]);
-        } else {
-            pages.push(currentPage);
-            currentPage = [embeds[i]];
-        }
-    }
-
-    if (currentPage.length > 0) {
-        pages.push(currentPage);
-    }
-
-    // save to database
-    const createdRecord = await prisma.PageButton.create({
-        data: {
-            currentPage: 1,
-            pages: JSON.stringify(pages),
-            creation: new Date(),
-            clanTag: clanTag,
-        },
-    });
-
-    const buttons = await generatePageButtons(createdRecord);
-
-    interaction.reply({
-        content: `Showing raid fails for clan ${clanTag}; Page (1/${pages.length})`,
-        embeds: pages[0],
-        components: [
-            {
-                type: 1,
-                components: buttons,
-            },
-        ],
-    });
 }

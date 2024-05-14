@@ -1,4 +1,4 @@
-import { API_TOKEN } from "../Discord_Bot/config.js";
+import { COC_API_TOKEN } from "../Discord_Bot/config.js";
 
 export async function getRaidData(clanTag: string) {
     const url = `https://cocproxy.royaleapi.dev/v1/clans/%23${clanTag.replace(
@@ -7,7 +7,7 @@ export async function getRaidData(clanTag: string) {
     )}/capitalraidseasons?limit=1`;
 
     const headers = {
-        Authorization: `Bearer ${API_TOKEN}`,
+        Authorization: `Bearer ${COC_API_TOKEN}`,
         "Content-Type": "application/json",
     };
 
