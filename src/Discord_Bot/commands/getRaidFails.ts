@@ -30,7 +30,7 @@ export async function execute(interaction: CommandInteraction) {
 
         if (!existingClan) {
             await interaction.reply({
-                content: `Clan with tag ${clanTag} not found. Please use the \`/setup_clan\` command to set up the clan.`,
+                content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to set up the clan.`,
                 ephemeral: true,
             });
             return;
@@ -145,5 +145,7 @@ export async function execute(interaction: CommandInteraction) {
                 "An internal error occured. Please contact EinEisbär | Felix",
             ephemeral: true,
         });
+
+        return;
     }
 }

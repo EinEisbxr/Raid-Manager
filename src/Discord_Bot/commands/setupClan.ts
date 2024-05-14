@@ -118,11 +118,13 @@ export async function execute(interaction: CommandInteraction) {
         const goblinMines = interaction.options.get("goblin_mines")
             ?.value as number;
 
-        const clanName = await cocClient.getClan(clanTag).then((clan: any) => {
-            return clan.name;
-        });
-
         try {
+            const clanName = await cocClient
+                .getClan(clanTag)
+                .then((clan: any) => {
+                    return clan.name;
+                });
+
             // Read and parse the JSON file
             let choices;
             const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -154,6 +156,7 @@ export async function execute(interaction: CommandInteraction) {
                 content: `Could not get any clan data for ${clanTag}. Please check the clan tag and try again.`,
                 ephemeral: true,
             });
+            return;
         }
 
         const existingClan = await prisma.clan.findFirst({
@@ -211,5 +214,7 @@ export async function execute(interaction: CommandInteraction) {
                 "An internal error occured. Please contact EinEisbär | Felix",
             ephemeral: true,
         });
+
+        return;
     }
 }

@@ -22,7 +22,8 @@ export function reloadAutocomplete() {
 export async function handleAutocomplete(interaction: any) {
     if (
         interaction.commandName === "get_raid_fails" ||
-        interaction.commandName === "setup_clan"
+        interaction.commandName === "setup_clan" ||
+        interaction.commandName === "get_current_raid_stats"
     ) {
         const focusedValue = interaction.options.getFocused();
         const filteredChoices = clanChoices.filter((choice: Choice) =>
