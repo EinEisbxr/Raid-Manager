@@ -15,7 +15,10 @@ if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
 
 export const COC_API_TOKEN = process.env.COC_API_TOKEN ?? "";
 
-export const cocClient = new Client({ keys: [COC_API_TOKEN] });
+export const cocClient = new Client({
+    keys: [COC_API_TOKEN],
+    baseURL: "https://cocproxy.royaleapi.dev/v1",
+});
 
 export const config = {
     DISCORD_TOKEN,
