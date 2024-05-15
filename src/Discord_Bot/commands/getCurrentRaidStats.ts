@@ -109,11 +109,14 @@ export async function execute(interaction: CommandInteraction) {
             .setColor("#0099ff");
 
         let districtCount = 0;
-        for (let i = 0; i < attacks.length; i++) {
-            if (attacks[i].districts.attacks.attackCount === 0) {
-                continue;
+        for (const attack of attacks) {
+            for (const district of attack["districts"]) {
+                const attackCount = district["attackCount"];
+
+                if (attackCount >= 1 && attackCount <= 6) {
+                    districtCount += 1;
+                }
             }
-            districtCount += attacks[i].districts.length;
         }
 
         for (const attackCount in attackCounts) {
