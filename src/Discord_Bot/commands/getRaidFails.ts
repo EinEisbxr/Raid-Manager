@@ -88,8 +88,6 @@ export async function execute(interaction: CommandInteraction) {
             }
         }
 
-        console.log(embeds);
-
         if (embeds.length === 0) {
             await interaction.reply({
                 content: `No raid fails found for clan ${clanTag}`,
