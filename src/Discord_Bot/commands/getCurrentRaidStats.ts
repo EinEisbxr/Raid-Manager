@@ -110,7 +110,7 @@ export async function execute(interaction: CommandInteraction) {
 
         let districtCount = 0;
         for (let i = 0; i < attacks.length; i++) {
-            if (attacks[i].districts.attacks.length === 0) {
+            if (attacks[i].districts.attacks.attackCount === 0) {
                 continue;
             }
             districtCount += attacks[i].districts.length;
