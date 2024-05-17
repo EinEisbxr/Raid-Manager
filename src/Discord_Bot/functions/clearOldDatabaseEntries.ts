@@ -4,9 +4,9 @@ export async function clearOldDatabaseEntries() {
     const date = new Date();
     date.setDate(date.getDate() - 1);
 
-    await prisma.raid.deleteMany({
+    await prisma.pageButton.deleteMany({
         where: {
-            date: {
+            creation: {
                 lt: date,
             },
         },
