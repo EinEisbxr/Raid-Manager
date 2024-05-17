@@ -4,6 +4,22 @@ import { getRaidData } from "../../CoC_API/raidFunctions.js";
 import { EmbedBuilder } from "discord.js";
 import { generatePageButtons } from "../functions/generateButtons.js";
 
+interface ExistingClan {
+    id: number;
+    tag: any;
+    guildID: any;
+    maxCapitalPeak: number;
+    maxBarbarianCamp: number;
+    maxWizardValley: number;
+    maxBalloonLagoon: number;
+    maxBuildersWorkshop: number;
+    maxDragonCliffs: number;
+    maxGolemQuarry: number;
+    maxSkeletonPark: number;
+    maxGoblinMines: number;
+    [key: string]: number;
+}
+
 export const data = {
     name: "get_raid_fails",
     description: "Get the raid fails for the specified clan",
@@ -24,7 +40,7 @@ export async function execute(interaction: CommandInteraction) {
         const existingClan = await prisma.clan.findFirst({
             where: {
                 tag: clanTag,
-                guildID: interaction.guildId,
+                guildID: interaction.guildId ?? "",
             },
         });
 
@@ -65,6 +81,16 @@ export async function execute(interaction: CommandInteraction) {
             for (let j = 0; j < attack.districts.length; j++) {
                 const district = attack.districts[j];
                 const districtName = districtMapping[district.name];
+
+                const existingClan = (await prisma.clan.findFirst({
+                    where: {
+                        tag: clanTag,
+                        guildID: interaction.guildId ?? "",
+                    },
+                })) as ExistingClan;
+
+                // ...
+
                 if (
                     districtName &&
                     district.attackCount > existingClan[districtName]
@@ -115,7 +141,7 @@ export async function execute(interaction: CommandInteraction) {
         }
 
         // save to database
-        const createdRecord = await prisma.PageButton.create({
+        const createdRecord = await prisma.pageButton.create({
             data: {
                 currentPage: 1,
                 pages: JSON.stringify(pages),

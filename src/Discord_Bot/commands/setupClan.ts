@@ -162,7 +162,7 @@ export async function execute(interaction: CommandInteraction) {
         const existingClan = await prisma.clan.findFirst({
             where: {
                 tag: clanTag,
-                guildID: interaction.guildId,
+                guildID: interaction.guildId ?? "",
             },
         });
 
@@ -170,7 +170,7 @@ export async function execute(interaction: CommandInteraction) {
             await prisma.clan.update({
                 where: {
                     id: existingClan.id,
-                    guildID: interaction.guildId,
+                    guildID: interaction.guildId ?? "",
                 },
                 data: {
                     maxCapitalPeak: capitalPeak,
@@ -190,7 +190,7 @@ export async function execute(interaction: CommandInteraction) {
             await prisma.clan.create({
                 data: {
                     tag: clanTag,
-                    guildID: interaction.guildId,
+                    guildID: interaction.guildId ?? "",
                     maxCapitalPeak: capitalPeak,
                     maxBarbarianCamp: barbarianCamp,
                     maxWizardValley: wizardValley,
