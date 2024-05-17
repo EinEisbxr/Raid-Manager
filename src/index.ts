@@ -1,7 +1,8 @@
 import { startBot } from "./Discord_Bot/bot.js";
 import { clearOldDatabaseEntries } from "./Discord_Bot/functions/clearOldDatabaseEntries.js";
 import net from "net";
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
