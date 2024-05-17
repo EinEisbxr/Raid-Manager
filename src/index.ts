@@ -1,9 +1,15 @@
 import { startBot } from "./Discord_Bot/bot.js";
-import { PrismaClient } from "@prisma/client";
 import { clearOldDatabaseEntries } from "./Discord_Bot/functions/clearOldDatabaseEntries.js";
 import net from "net";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient() as any;
+const connectionString = `${process.env.DATABASE_URL}`;
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+export const prisma = new PrismaClient({ adapter });
 
 export const client = await startBot();
 

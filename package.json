@@ -16,10 +16,12 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
+        "@prisma/adapter-pg": "^5.14.0",
         "@prisma/client": "^5.13.0",
         "clashofclans.js": "^3.3.9",
         "discord.js": "^14.15.2",
         "dotenv": "^16.4.5",
+        "pg": "^8.11.5",
         "webuntis": "^2.2.1"
     }
 }
