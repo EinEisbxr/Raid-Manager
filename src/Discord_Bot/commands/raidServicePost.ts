@@ -60,7 +60,16 @@ export async function execute(interaction: CommandInteraction) {
         const additionalInfo = interaction.options.get("additional_info")
             ?.value as string;
 
-        const playerName = (await cocClient.getPlayer(playerTag)).name;
+        let playerName;
+        try {
+            playerName = (await cocClient.getPlayer(playerTag)).name;
+        } catch (err) {
+            await interaction.reply({
+                content: `Could not get any player data for ${playerTag}. Please check the clan tag and try again.`,
+                ephemeral: true,
+            });
+            return;
+        }
 
         const embed = new EmbedBuilder()
             .setColor("#0099ff")
