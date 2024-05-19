@@ -89,8 +89,6 @@ export async function execute(interaction: CommandInteraction) {
                     },
                 })) as ExistingClan;
 
-                // ...
-
                 if (
                     districtName &&
                     district.attackCount > existingClan[districtName]
@@ -149,6 +147,7 @@ export async function execute(interaction: CommandInteraction) {
                 clanTag: clanTag,
             },
         });
+        prisma.$disconnect();
 
         const buttons = await generatePageButtons(createdRecord);
 

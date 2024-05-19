@@ -207,6 +207,7 @@ export async function execute(interaction: CommandInteraction) {
                 `Clan setup for ${clanTag} has been completed!`
             );
         }
+        prisma.$disconnect();
     } catch (error) {
         console.error(error);
         await interaction.reply({
