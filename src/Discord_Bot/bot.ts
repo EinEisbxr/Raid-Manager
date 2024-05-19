@@ -4,6 +4,8 @@ import { commands } from "./commands/index.js";
 import { deployCommands } from "./deploy-commands.js";
 import { handleAutocomplete } from "./handlers/handleAutocomplete.js";
 import { handleButtons } from "./handlers/handleButtons.js";
+import { clearMessages } from "./functions/clearMessages.js";
+import cron from "node-cron";
 
 export function startBot() {
     const client = new Client({
@@ -26,6 +28,14 @@ export function startBot() {
         console.log(
             "Bot is ready and commands have been deployed to all guilds."
         );
+    });
+
+    client.on("ready", () => {
+        // Schedule task to run every Monday at 11:59 PM
+        cron.schedule("59 23 * * 1", () => {
+            clearMessages(client, "1230830415535804446");
+            clearMessages(client, "1230829142736506890");
+        });
     });
 
     client.on("guildCreate", async (guild) => {
