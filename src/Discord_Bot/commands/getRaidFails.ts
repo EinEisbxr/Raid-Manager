@@ -36,6 +36,8 @@ export const data = {
 
 export async function execute(interaction: CommandInteraction) {
     try {
+        await interaction.deferReply();
+
         const clanTag = interaction.options.get("clan_tag")?.value as string;
         const existingClan = await prisma.clan.findFirst({
             where: {
@@ -151,7 +153,7 @@ export async function execute(interaction: CommandInteraction) {
 
         const buttons = await generatePageButtons(createdRecord);
 
-        interaction.reply({
+        interaction.editReply({
             content: `Showing raid fails for clan ${clanTag}; Page (1/${pages.length})`,
             embeds: pages[0],
             components: [
