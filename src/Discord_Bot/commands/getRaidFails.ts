@@ -115,9 +115,8 @@ export async function execute(interaction: CommandInteraction) {
         }
 
         if (embeds.length === 0) {
-            await interaction.reply({
+            await interaction.editReply({
                 content: `No raid fails found for clan ${clanTag}`,
-                ephemeral: true,
             });
             return;
         }
@@ -165,10 +164,9 @@ export async function execute(interaction: CommandInteraction) {
         });
     } catch (error) {
         console.error(error);
-        await interaction.reply({
+        await interaction.editReply({
             content:
                 "An internal error occured. Please contact EinEisbär | Felix",
-            ephemeral: true,
         });
 
         return;
