@@ -1,0 +1,40 @@
+name: publish
+
+on:
+    push:
+        branches: ["main"]
+
+env:
+	REGISTRY: ghcr.io
+	IMAGE_NAME: ${{ github.repository_owner }}/raid-manager-image
+
+jobs:
+	publish:
+		name: Publish Docker image
+		runs-on: ubuntu-latest
+
+		steps:
+		- uses: actions/checkout@v3
+		- name: Login to GitHub Container Registry
+			run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+		- name: Build Docker image and Publish
+			run: |
+				docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} .
+				docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+	deploy:
+		needs: publish
+		name: Deploy image
+		runs-on: ubuntu-latest
+
+		steps:
+		- name: install ssh keys
+			run: |
+				install -m 600 -D /dev/null ~/.ssh/id_rsa
+				echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+				ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+		- name: connect and pull
+			run: |
+				ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} && docker compose up -d && exit
+		- name: cleanup
+			run: |
+				rm -rf ~/.ssh
