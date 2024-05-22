@@ -14,8 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - id: toLowerCase
-              run: INPUT=${{ env.IMAGE_NAME }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
-            - run: echo ${{steps.toLowerCase.outputs.lowerCaseValue}}
+              run: echo "::set-output name=lowerCaseValue::$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')"
 
             - uses: actions/checkout@v3
             - name: Login to GitHub Container Registry
