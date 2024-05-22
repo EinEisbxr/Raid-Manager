@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import { Client } from "clashofclans.js";
-
-dotenv.config();
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID } = process.env;
 
