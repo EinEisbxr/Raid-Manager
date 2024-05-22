@@ -12,6 +12,9 @@ jobs:
     publish:
         name: Publish Docker image
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
         steps:
             - id: toLowerCase
               run: echo "::set-output name=lowerCaseValue::$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')"
