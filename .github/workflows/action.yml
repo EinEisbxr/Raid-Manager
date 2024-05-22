@@ -14,9 +14,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - id: toLowerCase
-              run: INPUT=${{ env.UPPERCASE_VAR }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
+              run: INPUT=${{ env.IMAGE_NAME }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
             - run: echo ${{steps.toLowerCase.outputs.lowerCaseValue}}
-
     publish:
         needs: variables
         name: Publish Docker image
@@ -27,8 +26,8 @@ jobs:
             - name: Login to GitHub Container Registry
               run: |
                   echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-                  docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} .
-                  docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+                  docker build -t ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }} .
+                  docker push ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }}
     deploy:
         needs: publish
         name: Deploy image
@@ -37,12 +36,12 @@ jobs:
         steps:
             - name: install ssh keys
               run: |
-                  install -m 600 -D /dev/null ~/.ssh/id_rsa
                   echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-                  ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
             - name: connect and pull
               run: |
-                  ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} && docker compose up -d && exit
+                  ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'docker compose up -d'
             - name: cleanup
               run: |
                   rm -rf ~/.ssh
