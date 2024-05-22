@@ -17,6 +17,7 @@ export function reloadAutocomplete() {
             dirname,
             "../../../data/clanChoices.json"
         );
+        console.log(filePathClanChoices);
         clanChoices = JSON.parse(fs.readFileSync(filePathClanChoices, "utf-8"));
 
         const filePathSkillLevels = path.join(
