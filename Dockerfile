@@ -14,6 +14,7 @@ RUN npm run build
 FROM node:20 AS production
 COPY --from=build /app/dist .
 COPY --from=build /app/package*.json .
+COPY --from=build /app/data .
 RUN npm ci --omit dev
 EXPOSE 8000
 CMD ["node", "."]
