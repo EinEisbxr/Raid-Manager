@@ -6,10 +6,19 @@ on:
 
 env:
     REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.actor.toLowerCase }}/raid-manager-image
+    IMAGE_NAME: ${{ github.actor }}/raid-manager-image
 
 jobs:
+    variables:
+        name: create variables
+        runs-on: ubuntu-latest
+        steps:
+            - id: toLowerCase
+              run: INPUT=${{ env.UPPERCASE_VAR }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
+            - run: echo ${{steps.toLowerCase.outputs.lowerCaseValue}}
+
     publish:
+        needs: variables
         name: Publish Docker image
         runs-on: ubuntu-latest
 
