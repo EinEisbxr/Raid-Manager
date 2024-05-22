@@ -12,16 +12,16 @@ jobs:
     variables:
         name: create variables
         runs-on: ubuntu-latest
-        steps:
-            - id: toLowerCase
-              run: INPUT=${{ env.IMAGE_NAME }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
-            - run: echo ${{steps.toLowerCase.outputs.lowerCaseValue}}
+
     publish:
         needs: variables
         name: Publish Docker image
         runs-on: ubuntu-latest
-
         steps:
+            - id: toLowerCase
+              run: INPUT=${{ env.IMAGE_NAME }} echo "::set-output name=lowerCaseValue::${INPUT,,}"
+            - run: echo ${{steps.toLowerCase.outputs.lowerCaseValue}}
+
             - uses: actions/checkout@v3
             - name: Login to GitHub Container Registry
               run: |
