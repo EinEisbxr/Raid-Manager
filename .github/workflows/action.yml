@@ -40,7 +40,7 @@ jobs:
                   ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
             - name: connect and pull
               run: |
-                  ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'docker compose up -d'
+                  ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd ./github_autodeploy && docker compose up -d'
             - name: cleanup
               run: |
                   rm -rf ~/.ssh
