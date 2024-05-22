@@ -9,12 +9,7 @@ env:
     IMAGE_NAME: ${{ github.actor }}/raid-manager-image
 
 jobs:
-    variables:
-        name: create variables
-        runs-on: ubuntu-latest
-
     publish:
-        needs: variables
         name: Publish Docker image
         runs-on: ubuntu-latest
         steps:
