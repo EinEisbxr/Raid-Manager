@@ -12,6 +12,7 @@ COPY . .
 RUN npm run build
 
 FROM node:20 AS production
+WORKDIR /app
 COPY --from=build /app .
 RUN npm ci --omit dev
 EXPOSE 8000
