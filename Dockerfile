@@ -15,7 +15,7 @@
 # EXPOSE 8000
 # CMD sh -c 'node .'
 # Use an official Node runtime as the base image
-FROM node:14
+FROM node:lastest
 
 # Set the working directory in the container to /app
 WORKDIR /app
