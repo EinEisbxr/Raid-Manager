@@ -10,5 +10,6 @@ COPY ./tsconfig.json ./
 RUN ls /app
 RUN npm run build
 RUN npx prisma generate
+RUN ls /app
 EXPOSE 8000
 CMD sh -c 'node .'
