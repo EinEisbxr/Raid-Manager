@@ -17,6 +17,8 @@
 # Use an official Node runtime as the base image
 FROM node:latest
 
+RUN apt-get update && mkdir -p /usr/src/app
+
 # Set the working directory in the container to /app
 WORKDIR /usr/src/app
 
