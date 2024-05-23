@@ -6,7 +6,7 @@ on:
 
 env:
     REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.actor }}/raid-manager-image2:latest
+    IMAGE_NAME: ${{ github.actor }}/raid-manager-image:latest
 
 jobs:
     publish:
