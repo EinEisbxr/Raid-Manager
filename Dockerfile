@@ -1,4 +1,5 @@
-FROM node:20 AS production
+FROM node:latest AS production
+RUN mkdir /app
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
