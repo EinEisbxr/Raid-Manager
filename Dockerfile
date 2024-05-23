@@ -6,7 +6,7 @@ COPY ./src ./src
 COPY ./data ./data
 COPY ./prisma ./prisma
 COPY ./tsconfig.json ./
-COPY .env ./
+# COPY .env ./
 RUN npm run build
 RUN npx prisma generate
 EXPOSE 8000
