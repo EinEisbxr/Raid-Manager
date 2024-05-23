@@ -1,7 +1,7 @@
 services:
     discord-bot:
         container_name: raid-manager2
-        image: ghcr.io/eineisbxr/raid-manager-image:latest
+        image: raid-manager:latest
         ports:
             - "8000:8000"
         environment:
