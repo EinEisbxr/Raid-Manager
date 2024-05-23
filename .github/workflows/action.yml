@@ -23,7 +23,7 @@ jobs:
             - name: Login to GitHub Container Registry
               run: |
                   echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-                  docker buildx -t ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }} .
+                  docker buildx build -t ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }} .
                   docker push ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }}
     deploy:
         needs: publish
