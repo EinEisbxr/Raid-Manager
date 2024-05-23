@@ -6,7 +6,7 @@ on:
 
 env:
     REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.actor }}/raid-manager-image:latest
+    IMAGE_NAME: ${{ github.actor }}/raid-manager-image2:latest
 
 jobs:
     publish:
@@ -23,7 +23,7 @@ jobs:
             - name: Login to GitHub Container Registry
               run: |
                   echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-                  docker build . -t ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }} .
+                  docker build -t ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }} .
                   docker push ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }}
     deploy:
         needs: publish
