@@ -5,7 +5,6 @@ RUN npm install
 COPY ./src ./src
 COPY ./data ./data
 COPY ./prisma ./prisma
-COPY .env ./
 COPY ./tsconfig.json ./
 RUN npm run build
 RUN npx prisma generate
