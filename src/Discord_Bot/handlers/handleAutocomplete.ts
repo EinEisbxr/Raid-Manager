@@ -13,11 +13,12 @@ let cgDonationChoices: Choice[];
 export function reloadAutocomplete() {
     try {
         const dirname = path.dirname(fileURLToPath(import.meta.url));
+        console.log("dirname:" + dirname);
         const filePathClanChoices = path.join(
             dirname,
             "../../../data/clanChoices.json"
         );
-        console.log(filePathClanChoices);
+        console.log("filePath:" + filePathClanChoices);
         clanChoices = JSON.parse(fs.readFileSync(filePathClanChoices, "utf-8"));
 
         const filePathSkillLevels = path.join(
