@@ -15,7 +15,7 @@
 # EXPOSE 8000
 # CMD sh -c 'node .'
 # Use an official Node runtime as the base image
-FROM arm64v7/node:latest
+FROM arm64v8/node:latest
 
 RUN apt-get update && mkdir -p /usr/src/app
 
