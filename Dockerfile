@@ -18,4 +18,4 @@ RUN npm run build
 RUN npx prisma generate
 
 # Run the app when the container launches
-CMD sh -c 'npx prisma migrate deploy && node build/index.js'
+CMD sh -c 'npx prisma migrate dev --init && node build/index.js'
