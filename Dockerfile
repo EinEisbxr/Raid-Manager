@@ -40,4 +40,4 @@ RUN npx prisma generate
 EXPOSE 8000
 
 # Run the app when the container launches
-CMD ["node", "build/index.js"]
+CMD sh -c 'npx prisma migrate dev --name init && node build/index.js'
