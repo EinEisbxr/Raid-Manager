@@ -1,4 +1,9 @@
-import { Client, ComponentType, AutocompleteInteraction } from "discord.js";
+import {
+    Client,
+    ComponentType,
+    AutocompleteInteraction,
+    ActivityType,
+} from "discord.js";
 import { config } from "./config.js";
 import { commands } from "./commands/index.js";
 import { deployCommands } from "./deploy-commands.js";
@@ -12,22 +17,13 @@ export function startBot() {
         intents: ["Guilds", "GuildMessages", "DirectMessages"],
     });
 
-    client.once("ready", () => {
-        console.log("Discord bot is ready! 🤖");
-    });
-
     client.once("ready", async () => {
-        // Get all guilds the bot is connected to
-        const guilds = client.guilds.cache;
-
-        // Deploy commands to all guilds
-        guilds.forEach(async (guild) => {
-            await deployCommands({ guildId: guild.id });
+        client.user?.setActivity({
+            name: "RAID: Shadow Legends",
+            type: ActivityType.Playing,
         });
 
-        console.log(
-            "Bot is ready and commands have been deployed to all guilds."
-        );
+        console.log("Bot is ready");
     });
 
     client.on("ready", () => {
