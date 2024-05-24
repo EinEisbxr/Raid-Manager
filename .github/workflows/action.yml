@@ -30,6 +30,14 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-node-
 
+            - name: Cache node modules
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
 
