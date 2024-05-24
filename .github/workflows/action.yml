@@ -2,7 +2,7 @@ name: publish
 
 on:
     push:
-        branches: ["main"]
+        branches: ['main']
 
 env:
     REGISTRY: ghcr.io
@@ -21,6 +21,14 @@ jobs:
 
             - name: Checkout
               uses: actions/checkout@v4
+
+            - name: Cache npm dependencies
+              uses: actions/cache@v2
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
 
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
