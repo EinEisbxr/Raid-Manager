@@ -36,8 +36,5 @@ RUN npm run build
 
 RUN npx prisma generate
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
-
 # Run the app when the container launches
 CMD sh -c 'npx prisma migrate dev --name init && node build/index.js'
