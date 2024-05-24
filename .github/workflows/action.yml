@@ -41,7 +41,7 @@ jobs:
                   context: .
                   platforms: linux/arm64
                   push: true
-                  tags: ${{ env.REGISTRY }}/${{ steps.toLowerCase.outputs.lowerCaseValue }}
+                  tags: ${{ env.REGISTRY }}/${{ env.lowerCaseValue }}
 
     deploy:
         needs: publish
