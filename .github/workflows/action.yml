@@ -5,7 +5,7 @@ on:
         branches: ['main']
 
 concurrency:
-    group: ${{ github.workflow }}
+    group: github-build-and-deploy-ssh
     cancel-in-progress: false
 
 env:
