@@ -62,7 +62,7 @@ jobs:
                   ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
             - name: connect and pull
               run: |
-                  ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd ./github_autodeploy && docker kill raid-manager && docker rm raid-manager && docker image rm ghcr.io/eineisbxr/raid-manager-image:latest && docker compose up -d'
+                  ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd ./github_autodeploy && docker compose pull && docker compose up -d'
             - name: cleanup
               run: |
                   rm -rf ~/.ssh
