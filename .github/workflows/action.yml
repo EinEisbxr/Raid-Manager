@@ -2,7 +2,11 @@ name: publish and deploy
 
 on:
     push:
-        branches: ["main"]
+        branches: ['main']
+
+concurrency:
+    group: ${{ github.workflow }}
+    cancel-in-progress: true
 
 env:
     REGISTRY: ghcr.io
