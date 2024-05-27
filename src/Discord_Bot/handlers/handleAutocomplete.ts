@@ -96,4 +96,4 @@ export async function handleAutocomplete(interaction: any) {
     }
 }
 
-reloadAutocomplete();
+await reloadAutocomplete();

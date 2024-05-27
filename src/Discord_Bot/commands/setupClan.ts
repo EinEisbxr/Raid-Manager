@@ -124,7 +124,7 @@ export async function execute(interaction: CommandInteraction) {
                 return clan.name;
             });
 
-            reloadAutocomplete();
+            await reloadAutocomplete();
         } catch (err) {
             await interaction.reply({
                 content: `Could not get any clan data for ${clanTag}. Please check the clan tag and try again.`,
