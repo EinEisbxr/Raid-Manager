@@ -14,6 +14,7 @@ datasource db {
 model Clan {
     id                  Int    @id @default(autoincrement())
     tag                 String
+    autocompleteName    String
     guildID             String
     maxCapitalPeak      Int
     maxBarbarianCamp    Int
