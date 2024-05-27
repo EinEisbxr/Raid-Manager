@@ -99,7 +99,7 @@ export async function execute(interaction: CommandInteraction) {
             return;
         }
 
-        const clanTag = interaction.options.get("clan_tag")?.value as string;
+        let clanTag = interaction.options.get("clan_tag")?.value as string;
         const capitalPeak = interaction.options.get("capital_peak")
             ?.value as number;
         const barbarianCamp = interaction.options.get("barbarian_camp")
@@ -118,6 +118,11 @@ export async function execute(interaction: CommandInteraction) {
             ?.value as number;
         const goblinMines = interaction.options.get("goblin_mines")
             ?.value as number;
+
+        clanTag = clanTag.toUpperCase();
+        if (!clanTag.startsWith("#")) {
+            clanTag = "#" + clanTag;
+        }
 
         try {
             clanName = await cocClient.getClan(clanTag).then((clan: any) => {
