@@ -124,31 +124,6 @@ export async function execute(interaction: CommandInteraction) {
                 return clan.name;
             });
 
-            // Read and parse the JSON file
-            let choices;
-            const dirname = path.dirname(fileURLToPath(import.meta.url));
-            const filePath = path.join(
-                dirname,
-                "../../../data/clanChoices.json"
-            );
-            try {
-                choices = JSON.parse(fs.readFileSync(filePath, "utf8"));
-            } catch (err) {
-                choices = [];
-            }
-
-            // Check if the choice already exists
-            if (!choices.some((choice: any) => choice.value === clanTag)) {
-                // Add the choice to the array
-                choices.push({
-                    name: `${clanName} (${clanTag})`,
-                    value: clanTag,
-                });
-
-                // Stringify the array and write it back to the JSON file
-                fs.writeFileSync(filePath, JSON.stringify(choices, null, 2));
-            }
-
             reloadAutocomplete();
         } catch (err) {
             await interaction.reply({
@@ -181,10 +156,13 @@ export async function execute(interaction: CommandInteraction) {
                     maxGolemQuarry: golemQuarry,
                     maxSkeletonPark: skeletonPark,
                     maxGoblinMines: goblinMines,
+                    autocompleteName: `${clanName} (${clanTag})`,
                 },
             });
 
-            await interaction.reply(`Clan ${clanTag} has been updated!`);
+            await interaction.reply(
+                `Clan ${clanName} (${clanTag}) has been updated!`
+            );
         } else {
             await prisma.clan.create({
                 data: {
@@ -204,7 +182,7 @@ export async function execute(interaction: CommandInteraction) {
             });
 
             await interaction.reply(
-                `Clan setup for ${clanTag} has been completed!`
+                `Clan setup for ${clanName} (${clanTag}) has been completed!`
             );
         }
         prisma.$disconnect();

@@ -6,20 +6,15 @@ interface Choice {
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { prisma } from "../../index.js";
 
 let clanChoices: Choice[];
 let skillLevelChoices: Choice[];
 let cgDonationChoices: Choice[];
-export function reloadAutocomplete() {
+export async function reloadAutocomplete() {
     try {
         const dirname = path.dirname(fileURLToPath(import.meta.url));
         console.log("dirname:" + dirname);
-        const filePathClanChoices = path.join(
-            dirname,
-            "../../../data/clanChoices.json"
-        );
-        console.log("filePath:" + filePathClanChoices);
-        clanChoices = JSON.parse(fs.readFileSync(filePathClanChoices, "utf-8"));
 
         const filePathSkillLevels = path.join(
             dirname,
@@ -36,6 +31,15 @@ export function reloadAutocomplete() {
         cgDonationChoices = JSON.parse(
             fs.readFileSync(filePathCgDonation, "utf-8")
         );
+
+        const clans = await prisma.clan.findMany();
+
+        clanChoices = clans.map((clan: any) => {
+            return {
+                name: clan.autocompleteName,
+                value: clan.tag,
+            };
+        });
     } catch (err) {
         console.error(err);
         clanChoices = [];
