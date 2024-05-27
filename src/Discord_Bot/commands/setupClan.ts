@@ -77,6 +77,7 @@ export const data = {
 };
 
 export async function execute(interaction: CommandInteraction) {
+    var clanName = "";
     try {
         const member = interaction.member;
         if (!member) {
@@ -119,11 +120,9 @@ export async function execute(interaction: CommandInteraction) {
             ?.value as number;
 
         try {
-            const clanName = await cocClient
-                .getClan(clanTag)
-                .then((clan: any) => {
-                    return clan.name;
-                });
+            clanName = await cocClient.getClan(clanTag).then((clan: any) => {
+                return clan.name;
+            });
 
             // Read and parse the JSON file
             let choices;
@@ -200,6 +199,7 @@ export async function execute(interaction: CommandInteraction) {
                     maxGolemQuarry: golemQuarry,
                     maxSkeletonPark: skeletonPark,
                     maxGoblinMines: goblinMines,
+                    autocompleteName: `${clanName} (${clanTag})`,
                 },
             });
 
