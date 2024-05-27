@@ -95,5 +95,3 @@ export async function handleAutocomplete(interaction: any) {
         interaction.respond(results.slice(0, 25));
     }
 }
-
-await reloadAutocomplete();

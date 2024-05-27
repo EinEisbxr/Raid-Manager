@@ -7,7 +7,10 @@ import {
 import { config } from "./config.js";
 import { commands } from "./commands/index.js";
 import { deployCommands } from "./deploy-commands.js";
-import { handleAutocomplete } from "./handlers/handleAutocomplete.js";
+import {
+    handleAutocomplete,
+    reloadAutocomplete,
+} from "./handlers/handleAutocomplete.js";
 import { handleButtons } from "./handlers/handleButtons.js";
 import { clearMessages } from "./functions/clearMessages.js";
 import cron from "node-cron";
@@ -22,6 +25,8 @@ export function startBot() {
             name: "RAID: Shadow Legends",
             type: ActivityType.Playing,
         });
+
+        await reloadAutocomplete();
 
         console.log("Bot is ready");
     });
