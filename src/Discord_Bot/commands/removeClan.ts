@@ -19,7 +19,7 @@ export async function execute(interaction: CommandInteraction) {
     try {
         const clanTag = interaction.options.get("clan_tag")?.value as string;
 
-        const clan = await prisma.clan.findUnique({
+        const clan = await prisma.clan.findFirst({
             where: {
                 tag: clanTag,
             },
@@ -35,7 +35,7 @@ export async function execute(interaction: CommandInteraction) {
         // Remove the clan from the database
         await prisma.clan.delete({
             where: {
-                tag: clanTag,
+                id: clan.id,
             },
         });
 
