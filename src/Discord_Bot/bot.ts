@@ -28,6 +28,11 @@ export function startBot() {
 
         await reloadAutocomplete();
 
+        // Redeploy commands on every guild
+        client.guilds.cache.forEach(async (guild) => {
+            await deployCommands({ guildId: guild.id });
+        });
+
         console.log("Bot is ready");
     });
 
