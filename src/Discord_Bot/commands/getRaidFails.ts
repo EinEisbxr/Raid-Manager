@@ -121,7 +121,7 @@ export async function execute(interaction: CommandInteraction) {
             return;
         }
 
-        const maxEmbedsPerMessage = 5;
+        const maxEmbedsPerMessage = 3;
         let pages: EmbedBuilder[][] = [];
         let currentPage: EmbedBuilder[] = [];
 

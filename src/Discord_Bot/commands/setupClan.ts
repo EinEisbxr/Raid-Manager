@@ -4,9 +4,6 @@ import { GuildMemberRoleManager } from "discord.js";
 import { ADMIN_ROLE_IDS } from "../config.js";
 import { cocClient } from "../config.js";
 import { reloadAutocomplete } from "../handlers/handleAutocomplete.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
 export const data = {
     name: "setup_clan",
