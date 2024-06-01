@@ -44,11 +44,12 @@ export async function execute(interaction: CommandInteraction) {
         );
     } catch (error) {
         console.error(error);
-        interaction.reply("An error occurred while removing the clan");
         await interaction.reply({
             content:
-                "An error occurred while posting your raid service. Please try again.",
+                "An internal error occured. Please contact EinEisbär | Felix",
             ephemeral: true,
         });
+
+        return;
     }
 }
