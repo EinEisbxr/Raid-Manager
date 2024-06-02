@@ -1,5 +1,6 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager } from "discord.js";
 import { prisma } from "../../index.js";
+import { ADMIN_ROLE_IDS } from "../config.js";
 
 export const data = {
     name: "remove_clan",
@@ -17,6 +18,26 @@ export const data = {
 
 export async function execute(interaction: CommandInteraction) {
     try {
+        const member = interaction.member;
+        if (!member) {
+            await interaction.reply({
+                content: "Member running the command not found.",
+                ephemeral: true,
+            });
+            return;
+        }
+        const isAdmin = (member.roles as GuildMemberRoleManager).cache.some(
+            (role) => ADMIN_ROLE_IDS.includes(role.id)
+        );
+
+        if (!isAdmin) {
+            await interaction.reply({
+                content: "You do not have permission to use this command.",
+                ephemeral: true,
+            });
+            return;
+        }
+
         const clanTag = interaction.options.get("clan_tag")?.value as string;
 
         const clan = await prisma.clan.findFirst({
