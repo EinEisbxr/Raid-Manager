@@ -89,7 +89,14 @@ export async function execute(interaction: CommandInteraction) {
                         tag: clanTag,
                         guildID: interaction.guildId ?? "",
                     },
-                })) as ExistingClan;
+                })) as ExistingClan | null;
+
+                if (existingClan === null) {
+                    await interaction.editReply({
+                        content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to set up the clan.`,
+                    });
+                    return;
+                }
 
                 if (
                     districtName &&
