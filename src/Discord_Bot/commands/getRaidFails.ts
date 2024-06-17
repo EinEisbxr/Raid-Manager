@@ -59,7 +59,7 @@ export async function execute(interaction: CommandInteraction) {
             "Barbarian Camp": "maxBarbarianCamp",
             "Wizard Valley": "maxWizardValley",
             "Balloon Lagoon": "maxBalloonLagoon",
-            "Builders Workshop": "maxBuildersWorkshop",
+            "Builder's Workshop": "maxBuildersWorkshop",
             "Dragon Cliffs": "maxDragonCliffs",
             "Golem Quarry": "maxGolemQuarry",
             "Skeleton Park": "maxSkeletonPark",
@@ -98,6 +98,12 @@ export async function execute(interaction: CommandInteraction) {
                     return;
                 }
 
+                console.log(
+                    "District: ",
+                    districtName,
+                    district.attackCount,
+                    existingClan[districtName]
+                );
                 if (
                     districtName &&
                     district.attackCount > existingClan[districtName]
