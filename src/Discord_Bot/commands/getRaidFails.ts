@@ -39,14 +39,14 @@ export async function execute(interaction: CommandInteraction) {
         await interaction.deferReply();
 
         const clanTag = interaction.options.get('clan_tag')?.value as string;
-        const existingClan = await prisma.clan.findFirst({
+        const existingClan = (await prisma.clan.findFirst({
             where: {
                 tag: clanTag,
                 guildID: interaction.guildId ?? '',
             },
-        });
+        })) as ExistingClan | null;
 
-        if (!existingClan) {
+        if (existingClan === null) {
             await interaction.reply({
                 content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to setup the clan.`,
                 ephemeral: true,
@@ -84,19 +84,19 @@ export async function execute(interaction: CommandInteraction) {
                 const district = attack.districts[j];
                 const districtName = districtMapping[district.name];
 
-                const existingClan = (await prisma.clan.findFirst({
-                    where: {
-                        tag: clanTag,
-                        guildID: interaction.guildId ?? '',
-                    },
-                })) as ExistingClan | null;
+                // const existingClan = (await prisma.clan.findFirst({
+                //     where: {
+                //         tag: clanTag,
+                //         guildID: interaction.guildId ?? '',
+                //     },
+                // })) as ExistingClan | null;
 
-                if (existingClan === null) {
-                    await interaction.editReply({
-                        content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to set up the clan.`,
-                    });
-                    return;
-                }
+                // if (existingClan === null) {
+                //     await interaction.editReply({
+                //         content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to set up the clan.`,
+                //     });
+                //     return;
+                // }
 
                 console.log(
                     'District: ',
