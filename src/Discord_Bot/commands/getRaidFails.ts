@@ -1,8 +1,8 @@
-import { CommandInteraction } from "discord.js";
-import { prisma } from "../../index.js";
-import { getRaidData } from "../../CoC_API/raidFunctions.js";
-import { EmbedBuilder } from "discord.js";
-import { generatePageButtons } from "../functions/generateButtons.js";
+import { CommandInteraction } from 'discord.js';
+import { prisma } from '../../index.js';
+import { getRaidData } from '../../CoC_API/raidFunctions.js';
+import { EmbedBuilder } from 'discord.js';
+import { generatePageButtons } from '../functions/generateButtons.js';
 
 interface ExistingClan {
     id: number;
@@ -21,12 +21,12 @@ interface ExistingClan {
 }
 
 export const data = {
-    name: "get_raid_fails",
-    description: "Get the raid fails for the specified clan",
+    name: 'get_raid_fails',
+    description: 'Get the raid fails for the specified clan',
     options: [
         {
-            name: "clan_tag",
-            description: "The tag of the clan",
+            name: 'clan_tag',
+            description: 'The tag of the clan',
             type: 3,
             required: true,
             autocomplete: true,
@@ -38,32 +38,32 @@ export async function execute(interaction: CommandInteraction) {
     try {
         await interaction.deferReply();
 
-        const clanTag = interaction.options.get("clan_tag")?.value as string;
+        const clanTag = interaction.options.get('clan_tag')?.value as string;
         const existingClan = await prisma.clan.findFirst({
             where: {
                 tag: clanTag,
-                guildID: interaction.guildId ?? "",
+                guildID: interaction.guildId ?? '',
             },
         });
 
         if (!existingClan) {
             await interaction.reply({
-                content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to set up the clan.`,
+                content: `Clan with tag ${clanTag} not found. Please check the clan tag or use the \`/setup_clan\` command to setup the clan.`,
                 ephemeral: true,
             });
             return;
         }
 
         const districtMapping: { [key: string]: string } = {
-            "Capital Peak": "maxCapitalPeak",
-            "Barbarian Camp": "maxBarbarianCamp",
-            "Wizard Valley": "maxWizardValley",
-            "Balloon Lagoon": "maxBalloonLagoon",
-            "Builder's Workshop": "maxBuildersWorkshop",
-            "Dragon Cliffs": "maxDragonCliffs",
-            "Golem Quarry": "maxGolemQuarry",
-            "Skeleton Park": "maxSkeletonPark",
-            "Goblin Mines": "maxGoblinMines",
+            'Capital Peak': 'maxCapitalPeak',
+            'Barbarian Camp': 'maxBarbarianCamp',
+            'Wizard Valley': 'maxWizardValley',
+            'Balloon Lagoon': 'maxBalloonLagoon',
+            "Builder's Workshop": 'maxBuildersWorkshop',
+            'Dragon Cliffs': 'maxDragonCliffs',
+            'Golem Quarry': 'maxGolemQuarry',
+            'Skeleton Park': 'maxSkeletonPark',
+            'Goblin Mines': 'maxGoblinMines',
         };
 
         const raidData = await getRaidData(clanTag);
@@ -87,7 +87,7 @@ export async function execute(interaction: CommandInteraction) {
                 const existingClan = (await prisma.clan.findFirst({
                     where: {
                         tag: clanTag,
-                        guildID: interaction.guildId ?? "",
+                        guildID: interaction.guildId ?? '',
                     },
                 })) as ExistingClan | null;
 
@@ -99,7 +99,7 @@ export async function execute(interaction: CommandInteraction) {
                 }
 
                 console.log(
-                    "District: ",
+                    'District: ',
                     districtName,
                     district.attackCount,
                     existingClan[districtName]
@@ -110,7 +110,7 @@ export async function execute(interaction: CommandInteraction) {
                 ) {
                     const embed = new EmbedBuilder()
                         .setTitle(`Fail on ${district.name} in Raid ${i + 1}`)
-                        .setColor("#0099ff");
+                        .setColor('#0099ff');
 
                     for (let k = 0; k < district.attackCount; k++) {
                         embed.addFields([
@@ -179,7 +179,7 @@ export async function execute(interaction: CommandInteraction) {
         console.error(error);
         await interaction.editReply({
             content:
-                "An internal error occured. Please contact EinEisbär | Felix",
+                'An internal error occured. Please contact EinEisbär | Felix',
         });
 
         return;
