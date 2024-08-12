@@ -97,13 +97,6 @@ export async function execute(interaction: CommandInteraction) {
                 //     });
                 //     return;
                 // }
-
-                console.log(
-                    'District: ',
-                    districtName,
-                    district.attackCount,
-                    existingClan[districtName]
-                );
                 if (
                     districtName &&
                     district.attackCount > existingClan[districtName]
