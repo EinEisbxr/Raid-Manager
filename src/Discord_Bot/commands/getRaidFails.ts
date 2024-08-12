@@ -154,7 +154,7 @@ export async function execute(interaction: CommandInteraction) {
                 clanTag: clanTag,
             },
         });
-        prisma.$disconnect();
+        await prisma.$disconnect();
 
         const buttons = await generatePageButtons(createdRecord);
 
@@ -174,6 +174,8 @@ export async function execute(interaction: CommandInteraction) {
             content:
                 'An internal error occured. Please contact EinEisbär | Felix',
         });
+
+        await prisma.$disconnect();
 
         return;
     }

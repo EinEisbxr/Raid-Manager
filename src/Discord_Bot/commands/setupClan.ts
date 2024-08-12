@@ -189,7 +189,7 @@ export async function execute(interaction: CommandInteraction) {
                 `Clan setup for ${clanName} (${clanTag}) has been completed!`
             );
         }
-        prisma.$disconnect();
+        await prisma.$disconnect();
     } catch (error) {
         console.error(error);
         await interaction.reply({
@@ -197,6 +197,8 @@ export async function execute(interaction: CommandInteraction) {
                 'An internal error occured. Please contact EinEisbär | Felix',
             ephemeral: true,
         });
+
+        await prisma.$disconnect();
 
         return;
     }

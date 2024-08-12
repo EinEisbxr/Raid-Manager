@@ -1,14 +1,14 @@
-import { CommandInteraction, GuildMemberRoleManager } from "discord.js";
-import { prisma } from "../../index.js";
-import { ADMIN_ROLE_IDS } from "../config.js";
+import { CommandInteraction, GuildMemberRoleManager } from 'discord.js';
+import { prisma } from '../../index.js';
+import { ADMIN_ROLE_IDS } from '../config.js';
 
 export const data = {
-    name: "remove_clan",
-    description: "Remove your clan from the database",
+    name: 'remove_clan',
+    description: 'Remove your clan from the database',
     options: [
         {
-            name: "clan_tag",
-            description: "The tag of your clan",
+            name: 'clan_tag',
+            description: 'The tag of your clan',
             type: 3,
             required: true,
             autocomplete: true,
@@ -21,7 +21,7 @@ export async function execute(interaction: CommandInteraction) {
         const member = interaction.member;
         if (!member) {
             await interaction.reply({
-                content: "Member running the command not found.",
+                content: 'Member running the command not found.',
                 ephemeral: true,
             });
             return;
@@ -32,13 +32,13 @@ export async function execute(interaction: CommandInteraction) {
 
         if (!isAdmin) {
             await interaction.reply({
-                content: "You do not have permission to use this command.",
+                content: 'You do not have permission to use this command.',
                 ephemeral: true,
             });
             return;
         }
 
-        const clanTag = interaction.options.get("clan_tag")?.value as string;
+        const clanTag = interaction.options.get('clan_tag')?.value as string;
 
         const clan = await prisma.clan.findFirst({
             where: {
@@ -60,6 +60,8 @@ export async function execute(interaction: CommandInteraction) {
             },
         });
 
+        await prisma.$disconnect();
+
         interaction.reply(
             `Clan ${autocompleteName} has been removed from the database`
         );
@@ -67,9 +69,11 @@ export async function execute(interaction: CommandInteraction) {
         console.error(error);
         await interaction.reply({
             content:
-                "An internal error occured. Please contact EinEisbär | Felix",
+                'An internal error occured. Please contact EinEisbär | Felix',
             ephemeral: true,
         });
+
+        await prisma.$disconnect();
 
         return;
     }
