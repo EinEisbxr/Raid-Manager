@@ -4,18 +4,22 @@ import pg from 'pg';
 const { Pool } = pg;
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
-import net from 'net';
+import http from 'http';
 
-const server = net.createServer((socket) => {
-    socket.write('Echo server\r\n');
-    socket.pipe(socket as unknown as NodeJS.WritableStream);
-
-    socket.on('error', (err) => {
-        console.error(`Socket error: ${err}`);
-    });
+// Set up an HTTP server for the Koyeb health check
+const healthCheckServer = http.createServer((req, res) => {
+    if (req.method === 'GET' && req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('OK');
+    } else {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+    }
 });
 
-server.listen(8000, '0.0.0.0');
+healthCheckServer.listen(8000, '0.0.0.0', () => {
+    console.log('Health check server is listening on port 8000');
+});
 
 const connectionString = `${process.env.DATABASE_URL}`;
 
