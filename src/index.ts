@@ -6,16 +6,6 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import net from 'net';
 
-const connectionString = `${process.env.DATABASE_URL}`;
-
-console.log(`Connecting to database at ${connectionString}`);
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-export const prisma = new PrismaClient({ adapter });
-
-export const client = await startBot();
-
 const server = net.createServer((socket) => {
     socket.write('Echo server\r\n');
     socket.pipe(socket as unknown as NodeJS.WritableStream);
@@ -26,6 +16,16 @@ const server = net.createServer((socket) => {
 });
 
 server.listen(8000, '0.0.0.0');
+
+const connectionString = `${process.env.DATABASE_URL}`;
+
+console.log(`Connecting to database at ${connectionString}`);
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+export const prisma = new PrismaClient({ adapter });
+
+export const client = await startBot();
 
 setInterval(async () => {
     await clearOldDatabaseEntries();
