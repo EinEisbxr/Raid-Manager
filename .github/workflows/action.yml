@@ -47,22 +47,22 @@ jobs:
                   push: true
                   tags: ${{ env.REGISTRY }}/${{ env.lowerCaseValue }}
 
-    deploy:
-        needs: publish
-        name: Deploy image
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-        steps:
-            - name: install ssh keys
-              run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-                  chmod 600 ~/.ssh/deploy_key
-                  ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-            - name: connect and pull
-              run: |
-                  ssh -T -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd ./github_autodeploy && docker compose pull && docker compose up -d'
-            - name: cleanup
-              run: |
-                  rm -rf ~/.ssh
+    # deploy:
+    #     needs: publish
+    #     name: Deploy image
+    #     runs-on: ubuntu-latest
+    #     permissions:
+    #         contents: read
+    #     steps:
+    #         - name: install ssh keys
+    #           run: |
+    #               mkdir -p ~/.ssh
+    #               echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+    #               chmod 600 ~/.ssh/deploy_key
+    #               ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    #         - name: connect and pull
+    #           run: |
+    #               ssh -T -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'cd ./github_autodeploy && docker compose pull && docker compose up -d'
+    #         - name: cleanup
+    #           run: |
+    #               rm -rf ~/.ssh
